@@ -48,7 +48,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ${{ toJSON(needs.check-updated-services.outputs) }}
+        service: ${{ needs.check-updated-services.outputs.output1 }}
 
     steps:
     - uses: actions/checkout@v4
