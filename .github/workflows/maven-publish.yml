@@ -33,7 +33,7 @@ jobs:
               fi
             fi
           done
-          echo "modified_services=${modified_services[*]}" >> $GITHUB_ENV
+          echo "modified_services=${modified_services[*]}" >> $GITHUB_OUTPUT
 
 
   build:
@@ -45,7 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ${{ fromJson(needs.check-updated-services.outputs.modified_services) }}
+        service: ${{ needs.check-updated-services.outputs.modified_services }}
 
     steps:
     - uses: actions/checkout@v4
