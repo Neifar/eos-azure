@@ -25,7 +25,7 @@ jobs:
           modified_services=()
           for service in ./*; do
             if [[ -d $service && "$(basename "$service")" == eos-* ]]; then
-              if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$service/"; then
+              if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "^$service/"; then
                 echo "$service was modified"
                 modified_services+=($service)
               fi
