@@ -33,6 +33,11 @@
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/Neifar/eos-azure</url>
+		</repository>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
