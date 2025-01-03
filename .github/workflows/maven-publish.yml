@@ -92,5 +92,5 @@ jobs:
         context: ${{ github.workspace }}/${{ matrix.service }}
         file: ${{ github.workspace }}/${{ matrix.service }}/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository }}/eos-registry-api:latest
+        tags: ghcr.io/${{ github.repository }}/eos-registry-api
 
