@@ -24,8 +24,9 @@ jobs:
         run: |
           echo "Checking for changes in service directories..."
           modified_services=()
-          for service in ./*; do
-            if [[ -d $service && "$(basename "$service")" == eos-* ]]; then
+          for dir_path in ./*; do
+            service=$(basename "$dir_path")
+            if [[ -d $service && $service == eos-* ]]; then
               if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$service/"; then
                 echo "$service was modified"
                 modified_services+=($service)
