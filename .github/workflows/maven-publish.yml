@@ -15,7 +15,7 @@ jobs:
   check-updated-services:
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.check-updates.outputs.modified_services }}
+      services-names: ${{ steps.check-updates.outputs.modified_services_json }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,7 +36,10 @@ jobs:
               fi
             fi
           done
-          echo "modified_services=${modified_services[*]}" >> $GITHUB_OUTPUT
+
+          MODIFIED_SERVICES_MATRIX=${modified_services[*]}
+          modified_services_json='{ "modified_services": ['${MODIFIED_SERVICES_MATRIX// /, }'] }'
+          echo "modified_services_json=$modified_services_json" >> $GITHUB_OUTPUT
 
 
   build:
@@ -47,8 +50,7 @@ jobs:
       packages: write
 
     strategy:
-      matrix:
-        service: ${{ needs.check-updated-services.outputs.output1 }}
+      matrix: ${{ fromJson( needs.check-updated-services.outputs.services-names) }}
 
     steps:
     - uses: actions/checkout@v4
@@ -80,13 +82,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=eos-az_eos-azure
-      working-directory: ${{ github.workspace }}/${{ matrix.service }}
+      working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
-      working-directory: ${{ github.workspace }}/${{ matrix.service }}
+      working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -100,10 +102,10 @@ jobs:
     - name: Build and push to Docker Hub
       uses: docker/build-push-action@v6
       with:
-        context: ${{ github.workspace }}/${{ matrix.service }}
-        file: ${{ github.workspace }}/${{ matrix.service }}/Dockerfile
+        context: ${{ github.workspace }}/${{ matrix.modified_services }}
+        file: ${{ github.workspace }}/${{ matrix.modified_services }}/Dockerfile
         push: true
-        tags: ramzi123/${{ matrix.service }}:latest
+        tags: ramzi123/${{ matrix.modified_services }}:latest
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
@@ -115,8 +117,8 @@ jobs:
     - name: Build and push to GitHub Container Registry
       uses: docker/build-push-action@v6
       with:
-        context: ${{ github.workspace }}/${{ matrix.service }}
-        file: ${{ github.workspace }}/${{ matrix.service }}/Dockerfile
+        context: ${{ github.workspace }}/${{ matrix.modified_services }}
+        file: ${{ github.workspace }}/${{ matrix.modified_services }}/Dockerfile
         push: true
-        tags: ghcr.io/neifar/${{ matrix.service }}:latest
+        tags: ghcr.io/neifar/${{ matrix.modified_services }}:latest
 
