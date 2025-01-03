@@ -19,13 +19,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check for changes in service directories
-        id: check_changes
+        shell: bash
         run: |
           echo "Checking for changes in service directories..."
           modified_services=()
           for service in ./*; do
             if [[ -d $service && "$(basename "$service")" == eos-* ]]; then
-              if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "^$service/"; then
+              echo "check $service"
+              if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$service/"; then
                 echo "$service was modified"
                 modified_services+=($service)
               fi
