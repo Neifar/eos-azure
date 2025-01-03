@@ -14,6 +14,8 @@ on:
 jobs:
   check-updated-services:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.check-updates.outputs.modified_services }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +23,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check for changes in service directories
+        id: check-updates
         run: |
           echo "Checking for changes in service directories..."
           modified_services=()
@@ -45,7 +48,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ${{ needs.check-updated-services.outputs.modified_services }}
+        service: ${{ toJSON(needs.check-updated-services.outputs) }}
 
     steps:
     - uses: actions/checkout@v4
