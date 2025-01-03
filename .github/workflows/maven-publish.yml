@@ -17,15 +17,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check for changes in service directories
-        shell: bash
         run: |
           echo "Checking for changes in service directories..."
           modified_services=()
           for service in ./*; do
             if [[ -d $service && "$(basename "$service")" == eos-* ]]; then
-              echo "check $service"
               if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$service/"; then
                 echo "$service was modified"
                 modified_services+=($service)
