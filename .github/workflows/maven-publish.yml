@@ -37,8 +37,8 @@ jobs:
             fi
           done
 
-          MODIFIED_SERVICES_MATRIX=${modified_services[*]}
-          modified_services_json='{ "modified_services": ['${MODIFIED_SERVICES_MATRIX// /, }'] }'
+          MODIFIED_SERVICES_MATRIX=$(echo "[\"$(echo ${modified_services[*]} | sed 's/ /\", \"/g')\"]")
+          modified_services_json='{ "modified_services": '$MODIFIED_SERVICES_MATRIX' }'
           echo "modified_services_json=$modified_services_json" >> $GITHUB_OUTPUT
 
 
@@ -50,7 +50,7 @@ jobs:
       packages: write
 
     strategy:
-      matrix: ${{ fromJson( needs.check-updated-services.outputs.services-names) }}
+      matrix: ${{ fromJson(needs.check-updated-services.outputs.services-names) }}
 
     steps:
     - uses: actions/checkout@v4
