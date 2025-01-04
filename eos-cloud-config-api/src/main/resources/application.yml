@@ -1,36 +1,11 @@
 spring:
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    driverClassName: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate.ddl-auto: create
-    show-sql: true
-    generate-ddl: false
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
-    group-id: ${KAFKA_GROUP_ID}
-
-topic:
-  name:
-    producer: ${KAFKA_TOPIC_PRODUCER}
-    consumer: ${KAFKA_TOPIC_CONSUMER}
-
-cloud:
-  azure:
-    storage:
-      account-name: ${AZURE_STORAGE_ACCOUNT_NAME}
-      account-key: ${AZURE_STORAGE_ACCOUNT_KEY}
-
-logging:
-  level:
-    com:
-      azure:
-        util:
-          AzureCloudServiceStagingEnvironment: error
-
-baseUrl: ${BASE_URL}
+  application:
+    name: eos-cloud-config-api
+  cloud:
+    config:
+      server:
+        git:
+          uri: /etc/eos-cloud-config-repo 
 
 management:
   endpoints:

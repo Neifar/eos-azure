@@ -14,7 +14,7 @@
 	<name>server</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<sonar.organization>eos-az</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
