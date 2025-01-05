@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: eos-cloud-config-api
-        image: docker.io/dpthub/eos-cloud-config-api:latest
+        image: docker.io/ramzi123/eos-cloud-config-api:latest
         ports:
         - containerPort: 8888
