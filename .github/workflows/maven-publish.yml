@@ -45,6 +45,8 @@ jobs:
   build:
     needs: check-updated-services
     runs-on: ubuntu-latest
+    env:
+      CI: false
     permissions:
       contents: read
       packages: write
@@ -94,9 +96,10 @@ jobs:
       run: |
           npm install
           npm run build
+          cd deployment/
+          npm install
       if: ${{ matrix.modified_services == 'eos-react-webapp' }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
-      continue-on-error: true
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
