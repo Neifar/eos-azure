@@ -62,6 +62,11 @@ jobs:
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
+    
+    - name: Set up NODE
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
     - name: Cache SonarQube packages
       uses: actions/cache@v4
@@ -82,10 +87,17 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=eos-az_eos-azure -DskipTests
+      if: ${{ matrix.modified_services != 'eos-react-webapp' }}
+      working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
+
+    - name: Build
+      run: npm run build
+      if: ${{ matrix.modified_services == 'eos-react-webapp' }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
+      if: ${{ matrix.modified_services != 'eos-react-webapp' }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
