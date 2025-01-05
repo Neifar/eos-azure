@@ -85,7 +85,7 @@ jobs:
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
       env:
         GITHUB_TOKEN: ${{ github.token }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
