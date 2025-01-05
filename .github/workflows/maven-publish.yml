@@ -91,7 +91,9 @@ jobs:
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
     - name: Build
-      run: npm run build
+      run: |
+          npm install
+          npm run build
       if: ${{ matrix.modified_services == 'eos-react-webapp' }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
