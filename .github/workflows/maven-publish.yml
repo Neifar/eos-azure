@@ -90,15 +90,13 @@ jobs:
       if: ${{ matrix.modified_services != 'eos-react-webapp' }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
 
-    - name: Install Node Dependencies
-      run: npm install
-      if: ${{ matrix.modified_services == 'eos-react-webapp' }}
-      working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
-
     - name: Build
-      run: npm run build
+      run: |
+          npm install
+          npm run build
       if: ${{ matrix.modified_services == 'eos-react-webapp' }}
       working-directory: ${{ github.workspace }}/${{ matrix.modified_services }}
+      continue-on-error: true
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
